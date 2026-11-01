@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useId, useState } from 'react'
 
 type TodoFormProps = {
   onAdd: (title: string) => boolean
@@ -7,6 +7,7 @@ type TodoFormProps = {
 export function TodoForm({ onAdd }: TodoFormProps) {
   const [title, setTitle] = useState('')
   const [error, setError] = useState('')
+  const errorId = useId()
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -36,12 +37,18 @@ export function TodoForm({ onAdd }: TodoFormProps) {
           }}
           placeholder="Новая задача"
           aria-label="Текст задачи"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? errorId : undefined}
         />
         <button className="todo-form__button" type="submit">
           Добавить
         </button>
       </div>
-      {error ? <p className="todo-form__error">{error}</p> : null}
+      {error ? (
+        <p id={errorId} className="todo-form__error" role="alert">
+          {error}
+        </p>
+      ) : null}
     </form>
   )
 }

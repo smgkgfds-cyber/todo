@@ -6,10 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint src --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && tsc -b --pretty false",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.14.24",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
@@ -19,7 +24,8 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "oxlint": "^1.89.0",
-    "typescript": "~7.0.2",
+    "prettier": "^3.9.10",
+    "typescript": "~5.9.3",
     "vite": "^8.3.5"
   }
 }

@@ -100,13 +100,25 @@
   border-color: var(--accent-border);
 }
 
+.todo-list-viewport {
+  max-height: min(70vh, 640px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
 .todo-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  position: relative;
+  width: 100%;
+}
+
+.todo-list__row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .todo-list__empty {
@@ -165,4 +177,28 @@
   .todo-form__row {
     flex-direction: column;
   }
+}
+
+.todo-list-viewport {
+  height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.todo-list {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todo-list__row {
+  box-sizing: border-box;
 }

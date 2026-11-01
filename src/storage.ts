@@ -1,4 +1,4 @@
-import type { Todo } from './types'
+import { isTodo, type Todo } from './model/todo'
 
 const STORAGE_KEY = 'todos'
 
@@ -20,19 +20,10 @@ export function loadTodos(): Todo[] {
   }
 }
 
-export function saveTodos(todos: Todo[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
-}
-
-function isTodo(value: unknown): value is Todo {
-  if (typeof value !== 'object' || value === null) {
-    return false
+export function saveTodos(todos: readonly Todo[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+  } catch {
+    // QuotaExceededError or private mode: keep working in memory.
   }
-
-  const candidate = value as Partial<Todo>
-  return (
-    typeof candidate.id === 'string' &&
-    typeof candidate.title === 'string' &&
-    typeof candidate.completed === 'boolean'
-  )
 }

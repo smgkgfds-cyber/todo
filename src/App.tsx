@@ -2,6 +2,7 @@ import { FilterBar } from './components/FilterBar'
 import { TodoForm } from './components/TodoForm'
 import { TodoList } from './components/TodoList'
 import { useTodos } from './hooks/useTodos'
+import { EMPTY_LIST_COPY } from './model/todo'
 import './App.css'
 
 function App() {
@@ -30,7 +31,12 @@ function App() {
         activeCount={activeCount}
         totalCount={todos.length}
       />
-      <TodoList todos={visibleTodos} onToggle={toggleTodo} onDelete={deleteTodo} />
+      <TodoList
+        todos={visibleTodos}
+        emptyLabel={EMPTY_LIST_COPY[filter]}
+        onToggle={toggleTodo}
+        onDelete={deleteTodo}
+      />
     </main>
   )
 }

@@ -1,4 +1,5 @@
-import type { TodoFilter } from '../types'
+import { cx } from '../lib/cx'
+import { TODO_FILTERS, type TodoFilter } from '../model/todo'
 
 type FilterBarProps = {
   value: TodoFilter
@@ -6,12 +7,6 @@ type FilterBarProps = {
   activeCount: number
   totalCount: number
 }
-
-const FILTERS: { id: TodoFilter; label: string }[] = [
-  { id: 'all', label: 'Все' },
-  { id: 'active', label: 'Активные' },
-  { id: 'completed', label: 'Выполненные' },
-]
 
 export function FilterBar({
   value,
@@ -24,21 +19,25 @@ export function FilterBar({
       <p className="filters__count">
         Осталось: {activeCount} из {totalCount}
       </p>
-      <div className="filters__buttons" role="tablist" aria-label="Фильтр задач">
-        {FILTERS.map((filter) => (
-          <button
-            key={filter.id}
-            type="button"
-            className={
-              value === filter.id
-                ? 'filters__button filters__button--active'
-                : 'filters__button'
-            }
-            onClick={() => onChange(filter.id)}
-          >
-            {filter.label}
-          </button>
-        ))}
+      <div className="filters__buttons" role="group" aria-label="Фильтр задач">
+        {TODO_FILTERS.map((filter) => {
+          const selected = value === filter.id
+
+          return (
+            <button
+              key={filter.id}
+              type="button"
+              className={cx(
+                'filters__button',
+                selected && 'filters__button--active',
+              )}
+              aria-pressed={selected}
+              onClick={() => onChange(filter.id)}
+            >
+              {filter.label}
+            </button>
+          )
+        })}
       </div>
     </div>
   )
