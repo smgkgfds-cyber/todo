@@ -1,4 +1,6 @@
-import type { Todo } from '../types'
+import { memo } from 'react'
+import { cx } from '../lib/cx'
+import type { Todo } from '../model/todo'
 
 type TodoItemProps = {
   todo: Todo
@@ -6,9 +8,13 @@ type TodoItemProps = {
   onDelete: (id: string) => void
 }
 
-export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+export const TodoItem = memo(function TodoItem({
+  todo,
+  onToggle,
+  onDelete,
+}: TodoItemProps) {
   return (
-    <li className={todo.completed ? 'todo-item todo-item--completed' : 'todo-item'}>
+    <div className={cx('todo-item', todo.completed && 'todo-item--completed')}>
       <label className="todo-item__label">
         <input
           type="checkbox"
@@ -25,6 +31,6 @@ export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
       >
         Удалить
       </button>
-    </li>
+    </div>
   )
-}
+})

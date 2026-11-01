@@ -1,54 +1,46 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import {
+  countActiveTodos,
+  createTodo,
+  filterTodos,
+  normalizeTitle,
+  todosReducer,
+  type TodoFilter,
+} from '../model/todo'
 import { loadTodos, saveTodos } from '../storage'
-import type { Todo, TodoFilter } from '../types'
 
 export function useTodos() {
-  const [todos, setTodos] = useState<Todo[]>(() => loadTodos())
+  const [todos, dispatch] = useReducer(todosReducer, undefined, loadTodos)
   const [filter, setFilter] = useState<TodoFilter>('all')
 
   useEffect(() => {
     saveTodos(todos)
   }, [todos])
 
-  const addTodo = (rawTitle: string): boolean => {
-    const title = rawTitle.trim()
+  const addTodo = useCallback((rawTitle: string): boolean => {
+    const title = normalizeTitle(rawTitle)
     if (!title) {
       return false
     }
 
-    const todo: Todo = {
-      id: crypto.randomUUID(),
-      title,
-      completed: false,
-    }
-
-    setTodos((current) => [todo, ...current])
+    dispatch({ type: 'add', todo: createTodo(title) })
     return true
-  }
+  }, [])
 
-  const toggleTodo = (id: string) => {
-    setTodos((current) =>
-      current.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    )
-  }
+  const toggleTodo = useCallback((id: string) => {
+    dispatch({ type: 'toggle', id })
+  }, [])
 
-  const deleteTodo = (id: string) => {
-    setTodos((current) => current.filter((todo) => todo.id !== id))
-  }
+  const deleteTodo = useCallback((id: string) => {
+    dispatch({ type: 'delete', id })
+  }, [])
 
-  const visibleTodos = useMemo(() => {
-    if (filter === 'active') {
-      return todos.filter((todo) => !todo.completed)
-    }
-    if (filter === 'completed') {
-      return todos.filter((todo) => todo.completed)
-    }
-    return todos
-  }, [todos, filter])
+  const visibleTodos = useMemo(
+    () => filterTodos(todos, filter),
+    [todos, filter],
+  )
 
-  const activeCount = todos.filter((todo) => !todo.completed).length
+  const activeCount = useMemo(() => countActiveTodos(todos), [todos])
 
   return {
     todos,
